@@ -1,45 +1,63 @@
 import math
 
 class Shape(object):
-    def __init__(self, name, colour, area_func, circumference_func):
-        self.name = name
-        self.colour = colour
-        self._area_func = area_func
-        self._circumference_func = circumference_func
-
-    def calc_area(self, *args):
-        return self._area_func(*args)
+    def __init__(self, shape_calc_obj, **dimensions):
+        self.name = shape_calc_obj.__name__
+        self._shape_calc_obj = shape_calc_obj
+        self.__dict__.update(dimensions)
+        self._update_calcs(**dimensions)
     
-    def calc_circumference(self, *args):
-        return self._circumference_func(*args)
+    def set_dimension(self, **dimensions):
+        self.__dict__.update(dimensions)
+        self._update_calcs(**dimensions)
+
+    def _update_calcs(self, **dimensions):
+        self.area = self._shape_calc_obj(**dimensions).calc_area()
+        self.circumference = self._shape_calc_obj(**dimensions).calc_circumference()
     
-
-def triangle_area(base, height):
-    return 0.5 * base * height
+class Triangle(object):
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
     
-def triangle_circumference(base, height):
-    return base + height + math.sqrt((base ** 2) + (height ** 2))
-
-triangle_obj = Shape("Triangle", "Yellow", triangle_area, triangle_circumference)
-print("{} {} Area: {}".format(triangle_obj.colour, triangle_obj.name, triangle_obj.calc_area(2, 1)))
-print("{} {} Circumference: {}".format(triangle_obj.colour, triangle_obj.name, triangle_obj.calc_circumference(2, 1)))
-
-def circle_area(radius):
-    return math.pi * (radius ** 2)
-
-def circle_circumference(radius):
-    return 2 * math.pi * radius
+    def calc_area(self):
+        return 0.5 * self.base * self.height
+    
+    def calc_circumference(self):
+        return self.base + self.height + math.sqrt((self.base ** 2) + (self.height ** 2))
         
-circle_obj = Shape("Circle", "Red", circle_area, circle_circumference)
-print("{} {} Area: {}".format(circle_obj.colour, circle_obj.name, circle_obj.calc_area(1)))
-print("{} {} Circumference: {}".format(circle_obj.colour, circle_obj.name, circle_obj.calc_circumference(1)))
 
-def square_area(height):
-    return float(height ** 2)
+triangle_obj = Shape(Triangle, base=2, height=1)
+print("{} Area: {}".format(triangle_obj.name, triangle_obj.area))
+print("{} Circumference: {}".format(triangle_obj.name, triangle_obj.circumference))
+triangle_obj.set_dimension(base=1, height=3)
+print("{} Area: {}".format(triangle_obj.name, triangle_obj.area))
+print("{} Circumference: {}".format(triangle_obj.name, triangle_obj.circumference))
+
+class Circle(object):
+    def __init__(self, radius):
+        self.radius = radius
     
-def square_circumference(height):
-    return 4 * height
-        
-square_obj = Shape("Square", "Blue", square_area, square_circumference)
-print("{} {} Area: {}".format(square_obj.colour, square_obj.name, square_obj.calc_area(2)))
-print("{} {} Circumference: {}".format(square_obj.colour, square_obj.name, square_obj.calc_circumference(2)))
+    def calc_area(self):
+        return math.pi * (self.radius ** 2)
+    
+    def calc_circumference(self):
+        return 2 * math.pi * self.radius
+
+circle_obj = Shape(Circle, radius=1)
+print("{} Area: {}".format(circle_obj.name, circle_obj.area))
+print("{} Circumference: {}".format(circle_obj.name, circle_obj.circumference))
+
+class Square(object):
+    def __init__(self, height):
+        self.height = height
+    
+    def calc_area(self):
+        return float(self.height ** 2)
+    
+    def calc_circumference(self):
+        return 4 * self.height
+
+square_obj = Shape(Square, height=1)
+print("{} Area: {}".format(square_obj.name, square_obj.area))
+print("{} Circumference: {}".format(square_obj.name, square_obj.circumference))
