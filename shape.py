@@ -21,3 +21,8 @@ def circle_area(radius):
 circle_obj = Shape("Circle", "Red", circle_area)
 print(circle_obj.calc_area(1))
 
+def square_area(height):
+    return height ** 2
+        
+square_obj = Shape("Square", "Blue", square_area)
+print(square_obj.calc_area(2))
